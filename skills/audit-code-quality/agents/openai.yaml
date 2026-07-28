@@ -1,0 +1,4 @@
+interface:
+  display_name: "Audit Code Quality"
+  short_description: "Produce detailed code quality audit reports"
+  default_prompt: "Use $audit-code-quality to audit this repository and return the complete detailed report."
