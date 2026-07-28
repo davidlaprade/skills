@@ -1,6 +1,14 @@
 ---
 name: commit-code
-description: Commit code changes in the user's preferred style. Use when asked to commit changes, write or revise commit messages, organize staged or unstaged work into commits, split changes into modular commits, or decide what supporting context belongs in a commit body.
+description: >
+  Commit code changes in the user's preferred style.
+  Use whenever work results in code changes that should be committed, e.g.
+  when implementing features, fixing bugs, refactoring, or otherwise
+  completing a coding task that leaves the repository in stable state.
+  Also use when asked to write commit messages, organize changes into commits,
+  or perform git commits. Only use when you are being asked to change
+  code. If your changes are exploratory, experimental, or otherwise ephemeral,
+  do not commit them unless explicitly asked to.
 ---
 
 # Commit Code
