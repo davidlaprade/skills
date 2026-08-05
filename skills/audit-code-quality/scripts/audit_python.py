@@ -106,6 +106,26 @@ def qualified_name(parents: list[str], name: str) -> str:
     return ".".join([*parents, name])
 
 
+def decorator_name(node: ast.expr) -> str | None:
+    """Return the final name component for a decorator expression."""
+    if isinstance(node, ast.Call):
+        return decorator_name(node.func)
+    if isinstance(node, ast.Name):
+        return node.id
+    if isinstance(node, ast.Attribute):
+        return node.attr
+    return None
+
+
+def is_protocol_class(node: ast.ClassDef) -> bool:
+    """Return whether a class directly declares the Protocol contract."""
+    return any(
+        (isinstance(base, ast.Name) and base.id == "Protocol")
+        or (isinstance(base, ast.Attribute) and base.attr == "Protocol")
+        for base in node.bases
+    )
+
+
 class NestingVisitor(ast.NodeVisitor):
     def __init__(self) -> None:
         self.depth = 0
@@ -252,6 +272,7 @@ class PythonAuditor(ast.NodeVisitor):
         self.include_literals = include_literals
         self.findings: list[Finding] = []
         self.parents: list[str] = []
+        self.class_contexts: list[tuple[str, bool]] = []
         self.parent_map = {
             child: parent
             for parent in ast.walk(tree)
@@ -314,7 +335,9 @@ class PythonAuditor(ast.NodeVisitor):
                 "Public class has no docstring.",
             )
         self.parents.append(node.name)
+        self.class_contexts.append((node.name, is_protocol_class(node)))
         self.generic_visit(node)
+        self.class_contexts.pop()
         self.parents.pop()
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
@@ -353,6 +376,32 @@ class PythonAuditor(ast.NodeVisitor):
                 )
             )
         ]
+        decorator_names = {
+            name
+            for decorator in node.decorator_list
+            if (name := decorator_name(decorator)) is not None
+        }
+        containing_class = (
+            self.class_contexts[-1] if self.class_contexts else None
+        )
+        is_pydantic_validator = bool(
+            decorator_names
+            & {
+                "field_validator",
+                "model_validator",
+                "root_validator",
+                "validator",
+            }
+        )
+        is_protocol_property = bool(
+            containing_class
+            and containing_class[1]
+            and decorator_names
+            & {"property", "cached_property", "setter", "deleter"}
+        )
+        is_private_prepared_method = bool(
+            containing_class and containing_class[0].startswith("_Prepared")
+        )
 
         if source_lines > self.thresholds.function_lines:
             self.add(
@@ -415,6 +464,9 @@ class PythonAuditor(ast.NodeVisitor):
             if (
                 public_name(node.name)
                 and ast.get_docstring(node, clean=False) is None
+                and not is_pydantic_validator
+                and not is_protocol_property
+                and not is_private_prepared_method
             ):
                 self.add(
                     "missing-docstring",

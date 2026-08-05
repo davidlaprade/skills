@@ -58,6 +58,14 @@ Do not demand docstrings that repeat a clear signature. Useful documentation
 states behavior, units, side effects, errors, or constraints that the signature
 cannot express.
 
+Always exclude these from missing-docstring findings and counts:
+
+* Pydantic validator methods, including field, model, legacy field, and legacy
+  root validators.
+* Properties declared by a `Protocol` class.
+* Methods on private prepared-change classes whose names start with
+  `_Prepared`.
+
 ## Complexity and structure
 
 Inspect:

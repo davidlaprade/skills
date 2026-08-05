@@ -62,7 +62,8 @@ Apply these rules:
 
 * List every file, class, and function above its size threshold.
 * List every function with 10 or more arguments.
-* For deep nesting, list the measured depth and describe the nested path.
+* For deep nesting, sort by decreasing measured depth, then path and line;
+  list the measured depth and describe the nested path.
 * For hard coded data, name the value or data block and explain why it should
   have another owner. Do not dump unverified literal candidates.
 * For documentation and typing, give the total and a complete count by file.

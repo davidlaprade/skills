@@ -110,6 +110,14 @@ For documentation and typing, give the total count and group results by file.
 List every material item. If there are many minor items, show the most important
 examples and a complete per file count.
 
+Never report missing docstrings for Pydantic validator methods, Protocol
+properties, or methods on private prepared-change classes whose names start
+with `_Prepared`. Exclude them from documentation counts and examples. Their
+decorators, types, and class role already state the relevant contract.
+
+Within the control-flow-nesting check, sort items by decreasing measured depth.
+Use path and line number as deterministic tie breakers.
+
 For coverage, name files or branches as untested only when executed coverage or
 direct test tracing proves it. If coverage was not measured, make the lack of a
 measurement prominent. Do not turn a filename match into a coverage claim.
