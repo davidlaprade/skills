@@ -108,50 +108,6 @@ clause and ask whether each clause adds something the reader needs. If a clause
 or a whole sentence does not earn its place, remove it. Then check that a reader
 seeing the text for the first time would understand every sentence.
 
-## The revision artifact
-
-When the second pass removes or rewrites anything, also make a small HTML file
-so the user can see what changed. Skip this for tiny edits where the second pass
-did not cut or rewrite anything.
-
-Build a list of the changes at the level of whole sentences. Group the entries
-into paragraphs, and give each paragraph a "para" number. Each entry is one of
-these kinds:
-
-- keep. The sentence is unchanged. Fields: `type` is "keep", and `text`.
-- edit. The sentence was rewritten. Fields: `type` is "edit", `old`, `new`, and
-  `why`.
-- del. The sentence was removed. Fields: `type` is "del", plus `old` and `why`.
-
-The `why` is a short plain reason for the change, e.g., "filler, adds nothing".
-Here is the shape of the list:
-
-```json
-[
-  { "para": 1, "items": [
-    { "type": "edit", "old": "...", "new": "...", "why": "..." },
-    { "type": "del",  "old": "...", "why": "..." }
-  ]},
-  { "para": 2, "items": [
-    { "type": "keep", "text": "..." }
-  ]}
-]
-```
-
-Then take the template at `assets/revision_template.html`, replace the exact
-line `const DATA = __DATA__;` with `const DATA = <json>;`, and save the result
-to a new file in `/tmp`, e.g., `/tmp/revision-<short-name>.html`. Do not write
-it into the skill folder. Check that no `__DATA__` text remains in the saved
-file.
-Tell the user where the file is. The file has three tabs:
-
-- First draft
-- Second draft
-- Diff
-
-In the Diff tab the removed text is red and the rewritten text is green. The
-reason for each change appears when the user hovers the colored text.
-
 ## Examples
 
 These are before and after pairs.
