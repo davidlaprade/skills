@@ -25,7 +25,9 @@ when you write prose for them.
    e.g., write "use" rather than "leverage". Short familiar words are faster to
    read. Avoid the words AI tools overuse, e.g., "delve", "tapestry",
    "landscape", "robust", and "leverage". Also, repeat a word rather than
-   swapping in a synonym just to avoid repeating it.
+   swapping in a synonym just to avoid repeating it. If there is a `CONTEXT.md`
+   in the root of the repo that defines repo terminology, then use those terms
+   rather than inventing your own.
 
 2. **Write complete sentences.** Each sentence states one clear thing and has a
    subject and a verb. Do not write fragments, and do not stitch several ideas
