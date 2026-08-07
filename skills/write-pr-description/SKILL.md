@@ -54,6 +54,7 @@ For deleted behavior, pass `--revision <merge-base-sha>` to `show` and `link`. T
    - what existed before or what it replaced;
    - the defect, limitation, risk, or cost that motivated the change;
    - the concrete gain;
+   - a concrete example from the evidence when one would make the change easier to understand;
    - supporting files and exact final line numbers;
    - whether a repository-familiar engineer could find it surprising or controversial.
 5. Verify material claims against final code, tests, schemas, or documentation. Use the thread and commit bodies to explain intent, but do not present aspirations as shipped behavior or invent motives, benchmarks, or guarantees.
@@ -65,6 +66,7 @@ Resolve a material conflict between the conversation and the committed branch be
 - Cover every key behavior, contract, architecture, workflow, dependency, configuration, data, performance, or operational change.
 - Combine related changes into one reviewer concern. Never produce a commit-by-commit or file-by-file transcript.
 - Rank items by reviewer impact and risk.
+- Use concrete examples when they make an abstract change, old failure, or new behavior easier to understand. Prefer real cases, names, values, or outcomes from before and after the change that appear in the thread, diff, tests, or documentation. Never invent an example.
 - Omit routine tests, formatting, generated files, lockfile churn, refactors with no meaningful review implication, and implementation trivia. Mention testing only when the testing system, contract, matrix, or strategy is itself a substantive change.
 - Keep at most 10 bullets. If the branch has more than 10 key changes, group closely related changes without hiding important independent risks.
 - Prefix an affected bullet with `:warning:` when it describes a surprising or controversial choice. Examples include deleting or splitting a major package, breaking a public contract, changing persisted data, replacing a core dependency, removing compatibility, or accepting a non-obvious tradeoff. State the consequence plainly; do not use the warning for ordinary changes.
@@ -88,8 +90,8 @@ Use this exact shape unless the user requests a repository-specific template:
 
 ## Key changes
 
-- <Linked change, what it replaced or how it worked before, and why the change fixes a problem or creates a meaningful gain. No more than three sentences.>
-- :warning: <Surprising change and its consequence, using the same evidence requirements. No more than three sentences.>
+- <Linked change, what it replaced or how it worked before, and why the change fixes a problem or creates a meaningful gain. Use no more than three sentences, or four when the final sentence gives a concrete example.>
+- :warning: <Surprising change and its consequence, using the same evidence requirements and sentence limit.>
 ```
 
 Write the summary before the bullets, usually in two to five sentences. Make it understandable without reading commit messages or knowing the implementation details.
@@ -99,7 +101,12 @@ For each bullet:
 - Explain what changed.
 - Explain what it replaced or how the old behavior worked.
 - Explain why it changed by naming the prior failure or limitation, or by stating the concrete gain.
-- Keep it to three sentences or fewer.
+- Give a concrete example when the available evidence provides one and the example helps the reviewer understand the change. Use the fourth sentence for that example.
+- Keep the bullet to three sentences when it has no concrete example. Allow up to four sentences only when one sentence gives the example. Do not add an example only to justify a longer bullet.
+
+Use this as a model for a useful bullet with four sentences:
+
+> Replaced patient records with explicit patient task views. Previously, one cutoff and one input selection were reused across every task for a patient, even when the tasks had different clinical landmarks. Each entry now defines `patient_key`, `task_id`, `observation_cutoff`, and source selection. For example, T7 can use the first treatment date while T9 uses the diagnosis date for the same patient.
 
 Do not add a title, preamble, commit list, file inventory, routine test bullet, checklist, or generic conclusion unless requested. Avoid vague claims such as "improves robustness" when the exact failure prevented is known.
 
@@ -109,7 +116,7 @@ Before returning it, confirm all of the following:
 
 - The comparison range matches the intended PR base and `HEAD`.
 - The summary is no more than five sentences and explains both purpose and importance.
-- There are 10 or fewer bullets, each no more than three sentences.
+- There are 10 or fewer bullets. Each bullet has no more than three sentences, unless it includes a concrete example and therefore needs a fourth sentence.
 - Every bullet states the change, prior state or replacement, and reason or gain.
 - Routine test additions and mechanical noise are absent.
 - Surprising choices carry `:warning:` and name their consequences.
