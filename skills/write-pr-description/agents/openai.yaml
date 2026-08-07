@@ -1,0 +1,4 @@
+interface:
+  display_name: "Write PR Description"
+  short_description: "Draft high-signal pull request descriptions"
+  default_prompt: "Use $write-pr-description to draft a reviewer-focused description for this branch."
